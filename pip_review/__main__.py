@@ -139,8 +139,8 @@ class InteractiveAsker(object):
 ask_to_install = partial(InteractiveAsker().ask, prompt='Upgrade now?')
 
 
-def update_packages(packages):
-    command = pip_cmd() + ['install'] + [
+def update_packages(packages, forwarded):
+    command = pip_cmd() + ['install'] + forwarded + [
         '{0}=={1}'.format(pkg['name'], pkg['latest_version']) for pkg in packages]
 
     subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
@@ -197,7 +197,7 @@ def main():
     if not outdated and not args.raw:
         logger.info('Everything up-to-date')
     elif args.auto:
-        update_packages(outdated)
+        update_packages(outdated, forwarded)
     elif args.raw:
         for pkg in outdated:
             logger.info('{0}=={1}'.format(pkg['name'], pkg['latest_version']))
